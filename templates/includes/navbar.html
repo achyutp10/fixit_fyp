@@ -1,0 +1,31 @@
+<div class="wrapper">
+  <!-- Header Start -->
+  <header id="header">
+    <div class="main-header">
+      <div class="container">
+        <div class="row">
+          <div class="col-lg-8 col-md-8 col-sm-12 col-xs-12">
+            <div class="logo">
+              <figure>
+                <a href="index.html" class="light-logo">
+                  <img src="#" alt="FIXIT" width='250'>
+                </a>
+              </figure>
+            </div>
+          </div>
+          <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+            <div class="login-option">
+              {% comment %} {% if user.is_authenticated %} {% endcomment %}
+              <a class="cs-color cs-popup-joinus-btn login-popup text-danger" href="#">Logout</a>
+              {% comment %} {% else %} {% endcomment %}
+              <span><a href="#" class="cs-color cs-popup-joinus-btn login-popup">Login</a></span> /
+              <a href="{% url "registerUser" %}" class="cs-color cs-popup-joinus-btn login-popup ml-0">Register</a>
+              <a class="get-start-btn" href="#">Register Technician</a>
+              {% comment %} {% endif %} {% endcomment %}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+</div>
