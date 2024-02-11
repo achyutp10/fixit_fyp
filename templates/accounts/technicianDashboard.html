@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h4>Welcome, {{user.username}}</h4>
+<p>This is a {{user.get_role}}</p>
+<p>This is a {{user.user_id}}</p>
+{% if user.profile_picture %}
+    <img src="{{ user.profile_picture.url }}" alt="Profile Picture" style="max-width: 200px; height: 180px; margin-top: 5px; border-radius: 60%;">
+{% else %}
+    <p>No profile picture available</p>
+{% endif %}
+
+{% include "includes/alerts.html" %}
+
+{% endblock  %}

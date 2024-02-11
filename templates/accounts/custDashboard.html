@@ -1,0 +1,106 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="container mt-0 p-0">
+    <div class="row">
+      <div class="col-md-6" style="background-color: #e5f1ff; max-height: 270px; max-width: 50%;">
+        {% if user.profile_picture %}
+        <img src="{{ user.profile_picture.url }}" alt="Profile Photo" class="img-fluid rounded-circle m-3" style="width: 150px; height: 150px;">
+        {% else %}
+        <p>No profile picture available</p>
+        {% endif %}
+ 
+        <div class="ml-5">
+          <h3>Welcome back,</h3>
+          <span>{{user.username}}</span>
+        </div>
+        <div class="col-md-10" style="margin: 40px 0 0 0;">
+          <form class="d-flex border border-dark rounded">
+            <div class="input-group" style="padding: 2px; ">
+              <span class="input-group-prepend">
+                <span class="input-group-text bg-white border-0"> 
+                  <i class="bi bi-search border-0" style="font-size: 1.2em; font-weight: bold;"></i>
+                </span>
+              </span>
+              <input type="text" class="form-control border-0" placeholder="What Service do you need?" aria-label="Search">
+            </div>       
+          </form>
+        </div>
+      </div>
+
+      <div class="col-md-6 mt-2">
+        <p>Hi, <span>{{user.email}}</span></p>
+        <form class="d-flex flex-column border border-dark rounded-3 p-3">  
+          <div class="row mb-3">
+            <h3 class="mb-3 text-center">Personal Information</h3>
+            <div class="col-md-6">
+              <label for="firstname" class="form-label">First Name:</label>
+              <input type="text" class="form-control border border-dark rounded-3" id="firstname" placeholder="{{user.first_name}}">
+            </div>
+            <div class="col-md-6">
+              <label for="lastname" class="form-label">Last Name:</label>
+              <input type="text" class="form-control border border-dark rounded-3" id="lastname" placeholder="{{user.last_name}}">
+            </div>
+          </div>
+          <div class="mb-2">
+            <label for="contact" class="form-label">Contact:</label>
+            <input type="text" class="form-control border border-dark rounded-3" id="contact" placeholder="{{user.phone_number}}">
+          </div>
+          <div class="d-flex justify-content-end"> <button type="submit" class="btn btn-primary gap-4">Save</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+<!-- Next content -->
+
+<div class="container mt-5">
+  <h3>Services</h3><br>
+  <div class="row">
+    <div class="col-md-4">
+      <div class="border border-dark rounded-3 d-flex align-items-center mt-2" style="height: 200px;">
+        <div>
+          <img src="{{technician_data.technician_image.url}}" alt="" class="img-fluid rounded-circle m-3" style="width: 90px; height: 90px;">
+        </div>
+        <div class="mx-3 flex-grow-1">
+            <h4 class='mt-4'>{{ technician_data.service_type }}</h4>
+          <img src="{{technician_data.technician_image.url}}" alt="Profile Photo" class="img-fluid rounded-circle m-3" style="width: 70px; height: 70px;">
+          <div class="mx-3 mb-3">
+            <span>{{technician_data.user.username}}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-6 mt-2 mb-2" style='margin-left: 190px;'>
+      <form class="d-flex flex-column border border-dark rounded-3 p-3">  
+        <div class="row mb-3">
+          <h3 class="mb-1 text-center">Change Password</h3>
+          <span class='text-center' style="margin-left: auto; color: rgb(192, 11, 11);">Forgot Password?</span><br>
+          <div class="mb-2">
+            <label for="contact" class="form-label">Current Password:</label>
+            <input type="text" class="form-control border border-dark rounded-3" id="contact" placeholder="Enter your Current Password">
+          </div>
+          <div class="col-md-6">
+            <label for="firstname" class="form-label">New Password:</label>
+            <input type="text" class="form-control border border-dark rounded-3" id="firstname" placeholder="Enter your New Password">
+          </div>
+          <div class="col-md-6">
+            <label for="lastname" class="form-label">Confirm Password:</label>
+            <input type="text" class="form-control border border-dark rounded-3" id="lastname" placeholder="Enter your Confirm Password">
+          </div>
+        </div>
+        
+        <div class="d-flex justify-content-end">
+          <button type="submit" class="btn btn-primary">Save</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+{% include "includes/alerts.html" %}
+
+{% endblock  %}

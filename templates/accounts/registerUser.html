@@ -1,119 +1,206 @@
 {% extends "base.html" %}
 {% block content %}
 
-		<!-- Main Section Start -->
-		<div class="main-section">
-			<div class="page-section nopadding cs-nomargin" style="margin-top: 0px;padding-top: 60px;padding-bottom: 60px;margin-bottom: 0px;">
-				<div class="container">
-					<div class="row">
-						<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 ">
-							<div class="user-dashboard loader-holder">
-								<div class="user-holder">
-                            <h4 class="text-center" style="margin-bottom: 0;">WELCOME TO FIXIT</h4>
-                            <p class="text-center">Please fill this form to get yourself onboarded.</p>
-                            <hr>
-                            <div id="restaurant-sets-holder">
-                                <form action="{% url "registerUser" %}" class="form-fields-set foodbakery-dev-restaurant-form" method="post" enctype="multipart/form-data">
-                                  {% csrf_token %}
-                                    <ul class="register-add-restaurant-tab-container restaurant-information-tab-container">
-                                        <li>
-                                            <div class="row">
-                                                <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-                                                    <div class="row">
-                                                        <ul >
-                                                            <li>
-                                                                <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
-                                                                    <div class="field-holder">
-                                                                        <label>First name</label>{{form.first_name}}
-                                                                    </div>
-                                                                </div>
-                                                                <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
-                                                                    <div class="field-holder">
-                                                                        <label>Last name</label>{{form.last_name}}
-                                                                    </div>
-                                                                  </div>
-                                                                  <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
-                                                                    <div class="field-holder">
-                                                                        <label>Profile Photo</label>{{form.profile_picture}}
-                                                                </div>
-                                                                </div>
-                                                                <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
-                                                                    <div class="field-holder">
-                                                                        <label>Username</label>{{form.username}}
-                                                                    </div>
-                                                                </div>
-                                                                  <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
-                                                                    <div class="field-holder">
-                                                                        <label>Email Address</label>{{form.email}}
-                                                                </div>
-                                                              </div>
-                                                                  <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
-                                                                    <div class="field-holder">
-                                                                        <label>Phone Number</label>{{form.phone_number}}
-                                                                </div>
-                                                              </div>
-                                                            </li>
-                                                            
-                                                            <li>
-                                                                <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
-                                                                    <div class="field-holder">
-                                                                        <label>Password</label>
-                                                                        {{form.password}}
-                                                                      </div>
-                                                                    </div>
-                                                                    <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
-                                                                      <div class="field-holder">
-                                                                        <label>Confirm Password</label>
-                                                                        {{form.confirm_password}}
-                                                                        
-                                                                    </div>
-                                                                </div>
-                                                            </li>
-                                                        </ul>
-                                                        
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </li>
-                                        <li>
-                                          <ul class='errorlist'>
-                                            {% for field in form  %}
-                                            {% if field.errors %}
-                                              {% for error in field.errors  %}
-                                                  <li style="color: red;">{{error}}</li>
-                                              {% endfor %}
-                                            {% endif %}
-                                            {% endfor %}
-
-                                            <li style="color:red">{{form.non_field_errors}}</li>
-                                          </ul>
-                                            <div class="row">
-                                                <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-                                                    <div class="field-holder">
-                                                        <div class="payment-holder">
-                                                            <input type="submit" value="Register" id="btn-next-restaurant-information" class="bgcolor">
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-
-                                            <div class="row">
-                                                <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-                                                    {% comment %} load message {% endcomment %}
-                                                    {% include "includes/alerts.html" %}
-                                                </div>
-                                            </div>
-                                        </li>
-                                    </ul>
-                                </form>
+<style>
+            body {
+              background-color: #e5f1ff;
+            }
+        
+            .main-section {
+              padding: 40px 0;
+            }
+        
+            .user-dashboard {
+              width: 100%;
+              max-width: 800px;
+              margin: 0 auto;
+              background-color: #fff;
+              padding-top: 10px;
+              padding-left: 5px;
+              padding-right: 20px;
+              border-radius: 10px;
+              box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            }
+        
+            .field-holder {
+              margin-bottom: 10px;
+            }
+        
+            label {
+              display: block;
+              margin-bottom: 5px;
+            }
+        
+            input[type="text"],
+            input[type="password"],
+            input[type="email"],
+            input[type="tel"],
+            input[type="file"] {
+              width: 100%;
+              padding: 8px;
+              border: 1px solid #ced4da;
+              border-radius: 5px;
+            }
+        
+            .btn input[type="submit"] {
+              background-color: #a22020 !important;
+              color: #fff;
+              padding: 10px 20px;
+              border: none;
+              border-radius: 5px;
+              cursor: pointer;
+            }
+        
+            .btn input[type="submit"]:hover {
+              background-color: #551010 !important;
+            }
+        
+            hr {
+              border-top: 1px solid #ccc;
+            }
+        
+            .alert {
+              margin-top: 20px;
+            }
+</style>
+        
+<div class="main-section">
+    <div class="container">
+      <div class="row justify-content-center">
+        <div class="col-lg-12">
+          <div class="user-dashboard">
+            <div class="user-holder">
+              <h4 class="text-center mb-0">WELCOME TO FIXIT</h4>
+              <p class="text-center">Please fill this form to get yourself onboarded.</p>
+              <hr>
+              <div id="restaurant-sets-holder">
+                <form action="{% url "registerUser" %}" class="form-fields-set" method="post" enctype="multipart/form-data">
+                  {% csrf_token %}
+                  <ul class="">
+                    <li class="list-unstyled">
+                      <div class="row">
+                        <div class="col-lg-12">
+                          <ul class="list-unstyled">
+                            <li class="row">
+                              <div class="col-md-6">
+                                <div class="field-holder">
+                                  <label>First name</label>
+                                  {{form.first_name}}
+                                </div>
+                              </div>
+                              <div class="col-md-6">
+                                <div class="field-holder">
+                                  <label>Last name</label>
+                                  {{form.last_name}}
+                                </div>
+                              </div>
+                            </li>
+                            <li class="row">
+                              <div class="col-md-4">
+                                <div class="field-holder">
+                                  <label>Profile Photo</label>
+                                  <input type="file" name="profile_picture" accept="image/*" onchange="readURL(this);">
+                                  {% comment %} {{form.profile_picture}} {% endcomment %}
+                                </div>
+                              </div>
+                              <div class="col-md-2">
+                                <div class="field-holder">
+                                    <!-- Image preview -->
+                                    <img id="preview" src="#" alt="Preview" style="display: none; max-width: 60px; max-height: 60px; margin-top:32px;">
+                                </div>
                             </div>
+                              <div class="col-md-6">
+                                <div class="field-holder">
+                                  <label>Username</label>
+                                  {{form.username}}
+                                </div>
+                              </div>
+                            </li>
+                            <li class="row">
+                              <div class="col-md-6">
+                                <div class="field-holder">
+                                  <label>Email Address</label>
+                                  {{form.email}}
+                                </div>
+                              </div>
+                              <div class="col-md-6">
+                                <div class="field-holder">
+                                  <label>Phone Number</label>
+                                  {{form.phone_number}}
+                                </div>
+                              </div>
+                            </li>
+                            <li class="row list-unstyled">
+                              <div class="col-md-6">
+                                <div class="field-holder">
+                                  <label>Password</label>
+                                  {{form.password}}
+                                </div>
+                              </div>
+                              <div class="col-md-6">
+                                <div class="field-holder">
+                                  <label>Confirm Password</label>
+                                  {{form.confirm_password}}
+                                </div>
+                              </div>
+                            </li>
+                          </ul>
                         </div>
-							</div>
-						</div>
-					</div>
-				</div>
-			</div>
-		</div>
-		<!-- Main Section End -->
+                      </div>
+                    </li>
+                    <li class="list-unstyled">
+                      <ul class="errorlist list-unstyled">
+                        {% for field in form %}
+                          {% if field.errors %}
+                            {% for error in field.errors %}
+                              <li style="color: red;" class="list-unstyled">{{error}}</li>
+                            {% endfor %}
+                          {% endif %}
+                        {% endfor %}
+                        <li style="color:red" class="list-unstyled">{{form.non_field_errors}}</li>
+                      </ul>
+                      <div class="row">
+                        <div class="col-lg-12">
+                          <div class="field-holder">
+                            <div>
+                              <input type="submit" value="Register" class="btn btn-danger">
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="row list-unstyled">
+                        <div class="col-lg-12">
+                          {% comment %} load message {% endcomment %}
+                          {% include "includes/alerts.html" %}
+                        </div>
+                      </div>
+                    </li>
+                  </ul>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <script>
+    function readURL(input) {
+        if (input.files && input.files[0]) {
+            var reader = new FileReader();
+
+            reader.onload = function(e) {
+                document.getElementById('preview').style.display = 'block';
+                document.getElementById('preview').setAttribute('src', e.target.result);
+            }
+
+            reader.readAsDataURL(input.files[0]);
+        }
+    }
+
+    document.querySelector('input[type="file"]').addEventListener('change', function() {
+        readURL(this);
+    });
+</script>
 
 {% endblock  %}

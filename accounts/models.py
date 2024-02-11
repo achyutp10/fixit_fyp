@@ -1,5 +1,7 @@
+import uuid
 from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
+
 
 
 # Create your models here.
@@ -14,6 +16,7 @@ class UserManager(BaseUserManager):
     user = self.model(
       email = self.normalize_email(email),
       username = username,
+      user_id = uuid.uuid4(),
       first_name = first_name,
       last_name = last_name,
       phone_number=phone_number,
@@ -23,20 +26,34 @@ class UserManager(BaseUserManager):
     user.save(using=self._db)
     return user
   
-  def create_superuser(self, first_name, last_name, username, email, password=None):
+  def create_superuser(self, first_name, last_name, username, email, phone_number=None, profile_picture=None, password=None):
     user = self.create_user(
       email=self.normalize_email(email),
       username=username,
       password=password,
       first_name=first_name,
       last_name=last_name,
+      phone_number=phone_number,
+      profile_picture=profile_picture,
     )
     user.is_admin = True
     user.is_active = True
     user.is_staff = True
     user.is_superadmin = True
+    user.is_superuser = True
     user.save(using=self._db)
     return user
+
+from django.utils.deconstruct import deconstructible
+
+@deconstructible
+class UserImagePath:
+    def __init__(self, sub_path):
+        self.sub_path = sub_path
+
+    def __call__(self, instance, filename):
+        # Generate the path and filename
+        return f'users/profile_pictures/{instance.username}/{filename}'
 class User(AbstractBaseUser):
   TECHNICIAN = 1
   CUSTOMER = 2
@@ -49,9 +66,10 @@ class User(AbstractBaseUser):
   first_name = models.CharField(max_length=50)
   last_name = models.CharField(max_length=50)
   username = models.CharField(max_length=50, unique=True)
-  profile_picture = models.ImageField(upload_to='users/profile_pictures', blank=True, null=True)
+  user_id = models.UUIDField(default=uuid.uuid4, editable=False, unique=True)
+  profile_picture = models.ImageField(upload_to=UserImagePath('profile_pictures'), blank=True, null=True)
   email = models.EmailField(max_length=100, unique=True)
-  phone_number = models.CharField(max_length=12, blank=True)
+  phone_number = models.CharField(max_length=12, blank=True, null=True)
   role = models.PositiveSmallIntegerField(choices=ROLE_CHOICES, blank=True, null=True)
 
   # Required fields
@@ -77,6 +95,13 @@ class User(AbstractBaseUser):
   
   def has_module_perms(self, app_label):
     return True
+  
+  def get_role(self):
+    if self.role == 1:
+      user_role = 'Technician'
+    elif self.role == 2:
+      user_role = 'Customer'
+    return user_role
 
 class UserProfile(models.Model):
   user = models.OneToOneField(User, on_delete=models.CASCADE, blank=True)
