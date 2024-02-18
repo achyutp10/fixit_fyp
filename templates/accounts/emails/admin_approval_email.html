@@ -1,0 +1,11 @@
+{% autoescape off %}
+
+Hi {{user.first_name}},
+
+{% if is_approved %}
+Congratulations! You have been approved by admin.
+{% else %}
+Sorry! You are not elligible to be approved.
+{% endif %}
+
+{% endautoescape %}

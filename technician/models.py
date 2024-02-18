@@ -3,6 +3,7 @@ from accounts.models import User, UserProfile
 
 # Create your models here.
 from django.utils.deconstruct import deconstructible
+from accounts.utils import send_notification
 
 @deconstructible
 class TechnicianImagePath:
@@ -34,3 +35,24 @@ class Technician(models.Model):
 
   def __str__(self):
     return self.user.username
+  
+  def save(self, *args, **kwargs):
+     if self.pk is not None:
+       #update
+       orig = Technician.objects.get(pk=self.pk)
+       if orig.is_approved != self.is_approved:
+          mail_template = 'accounts/emails/admin_approval_email.html'
+          context = {
+                'user': self.user,
+                'is_approved': self.is_approved,
+             }
+          if self.is_approved == True:
+             #send notification email
+             mail_subject = "Congratulations! You have been approved by admin."
+             
+             send_notification(mail_subject, mail_template, context)
+          else:
+             #send notification email
+             mail_subject = "Sorry! You are not elligible to be approved."
+             send_notification(mail_subject, mail_template, context)
+     return super(Technician, self).save(*args, **kwargs)
