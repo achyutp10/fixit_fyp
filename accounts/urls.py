@@ -11,4 +11,14 @@ urlpatterns = [
     path('myAccount/', views.myAccount, name="myAccount"),
     path('custDashboard/', views.custDashboard, name="custDashboard"),
     path('technicianDashboard/', views.technicianDashboard, name="technicianDashboard"),
+    path('activate/<uidb64>/<token>/', views.activate, name="activate"),
+
+    path('forgot_password/', views.forgot_password, name="forgot_password"),
+    path('reset_password_validate/<uidb64>/<token>/', views.reset_password_validate, name="reset_password_validate"),
+    path('reset_password/', views.reset_password, name="reset_password"),
+
+    path('updateTechnicianInfo/', views.updateTechnicianInfo, name="updateTechnicianInfo"),
+    path('updateCustomerInfo/', views.updateCustomerInfo, name="updateCustomerInfo"),
+    path('changePassTech/', views.changePassTech, name="changePassTech"),
+    path('changePassCust/', views.changePassCust, name="changePassCust"),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

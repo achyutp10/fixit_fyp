@@ -31,23 +31,24 @@
 
       <div class="col-md-6 mt-2">
         <p>Hi, <span>{{user.email}}</span></p>
-        <form class="d-flex flex-column border border-dark rounded-3 p-3">  
+        <form class="d-flex flex-column border border-dark rounded-3 p-3" method="post" action="{% url "updateCustomerInfo" %}">
+          {% csrf_token %}  
           <div class="row mb-3">
             <h3 class="mb-3 text-center">Personal Information</h3>
             <div class="col-md-6">
-              <label for="firstname" class="form-label">First Name:</label>
-              <input type="text" class="form-control border border-dark rounded-3" id="firstname" placeholder="{{user.first_name}}">
+              <label for="first_name" class="form-label">First Name:</label>
+              <input type="text" class="form-control border border-dark rounded-3" id="first_name" name="first_name" value="{{user.first_name}}">
             </div>
             <div class="col-md-6">
-              <label for="lastname" class="form-label">Last Name:</label>
-              <input type="text" class="form-control border border-dark rounded-3" id="lastname" placeholder="{{user.last_name}}">
+              <label for="last_name" class="form-label">Last Name:</label>
+              <input type="text" class="form-control border border-dark rounded-3" id="last_name" name="last_name" value="{{user.last_name}}">
             </div>
           </div>
           <div class="mb-2">
-            <label for="contact" class="form-label">Contact:</label>
-            <input type="text" class="form-control border border-dark rounded-3" id="contact" placeholder="{{user.phone_number}}">
+            <label for="phone_number" class="form-label">Contact:</label>
+            <input type="text" class="form-control border border-dark rounded-3" id="phone_number" name="phone_number" value="{{user.phone_number}}">
           </div>
-          <div class="d-flex justify-content-end"> <button type="submit" class="btn btn-primary gap-4">Save</button>
+          <div class="d-flex justify-content-end"> <button type="submit" class="btn gap-4 w-25 fw-bold" style="background-color: #070441; color: white;">Save</button>
           </div>
         </form>
       </div>
@@ -56,45 +57,52 @@
 
 <!-- Next content -->
 
-<div class="container mt-5">
+<div class="container mt-3">
   <h3>Services</h3><br>
   <div class="row">
     <div class="col-md-4">
-      <div class="border border-dark rounded-3 d-flex align-items-center mt-2" style="height: 200px;">
+
+    {% for technician in all_technicians %}
+
+      <div class="border border-dark rounded-3 d-flex align-items-center mt-0 mb-2" style="height: 200px;">
         <div>
-          <img src="{{technician_data.technician_image.url}}" alt="" class="img-fluid rounded-circle m-3" style="width: 90px; height: 90px;">
+          <img src="{{technician.service_image.url}}" alt="" class="img-fluid rounded-circle m-3" style="width: 90px; height: 90px;">
         </div>
-        <div class="mx-3 flex-grow-1">
-            <h4 class='mt-4'>{{ technician_data.service_type }}</h4>
-          <img src="{{technician_data.technician_image.url}}" alt="Profile Photo" class="img-fluid rounded-circle m-3" style="width: 70px; height: 70px;">
-          <div class="mx-3 mb-3">
-            <span>{{technician_data.user.username}}</span>
+        <div class="mx-5 flex-grow-1">
+            <h4 class='mt-4'>{{ technician.service_type }}</h4>
+          <img src="{{technician.user.profile_picture.url}}" alt="Profile Photo" class="img-fluid rounded-circle m-3" style="width: 70px; height: 70px;">
+          <div class="mx-4 mb-3">
+            <span class="text-center">{{ technician.user.username }}</span>
           </div>
         </div>
       </div>
+
+      {% endfor %}
+
     </div>
 
-    <div class="col-md-6 mt-2 mb-2" style='margin-left: 190px;'>
-      <form class="d-flex flex-column border border-dark rounded-3 p-3">  
+    <div class="col-md-6 mt-0 mb-2" style='margin-left: 190px;'>
+      <form class="d-flex flex-column border border-dark rounded-3 p-3" method="post" action="{% url "changePassCust" %}"> 
+        {% csrf_token %} 
         <div class="row mb-3">
           <h3 class="mb-1 text-center">Change Password</h3>
           <span class='text-center' style="margin-left: auto; color: rgb(192, 11, 11);">Forgot Password?</span><br>
           <div class="mb-2">
-            <label for="contact" class="form-label">Current Password:</label>
-            <input type="text" class="form-control border border-dark rounded-3" id="contact" placeholder="Enter your Current Password">
+            <label for="current_password" class="form-label">Current Password:</label>
+            <input type="text" class="form-control border border-dark rounded-3" id="current_password" name="current_password">
           </div>
           <div class="col-md-6">
-            <label for="firstname" class="form-label">New Password:</label>
-            <input type="text" class="form-control border border-dark rounded-3" id="firstname" placeholder="Enter your New Password">
+            <label for="new_password" class="form-label">New Password:</label>
+            <input type="text" class="form-control border border-dark rounded-3" id="new_password" name="new_password">
           </div>
           <div class="col-md-6">
-            <label for="lastname" class="form-label">Confirm Password:</label>
-            <input type="text" class="form-control border border-dark rounded-3" id="lastname" placeholder="Enter your Confirm Password">
+            <label for="confirm_password" class="form-label">Confirm Password:</label>
+            <input type="text" class="form-control border border-dark rounded-3" id="confirm_password" name="confirm_password">
           </div>
         </div>
         
         <div class="d-flex justify-content-end">
-          <button type="submit" class="btn btn-primary">Save</button>
+          <button type="submit" class="btn w-25 fw-bold" style="background-color: #070441; color: white;">Save</button>
         </div>
       </form>
     </div>

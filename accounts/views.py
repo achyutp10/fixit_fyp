@@ -4,10 +4,14 @@ from accounts.models import User, UserProfile
 from technician.forms import TechnicianForm
 from .forms import UserForm
 from django.contrib import messages, auth
-from .utils import detectUser 
+from .utils import detectUser, send_verification_email
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.core.exceptions import PermissionDenied
 from technician.models import Technician
+from django.contrib.auth import update_session_auth_hash
+from django.utils.http import urlsafe_base64_decode
+from django.contrib.auth.tokens import default_token_generator
+
 # Create your views here.
 
 # Restrict the technician from accessing the customer page
@@ -50,6 +54,11 @@ def registerUser(request):
                                       email=email, phone_number=phone_number, username=username, password=password)
       user.role = User.CUSTOMER
       user.save()
+
+      #Send verification email
+      mail_subject = 'Please activate your account'
+      email_template = 'accounts/emails/account_verification_email.html'
+      send_verification_email(request, user, mail_subject, email_template)
       messages.success(request, 'Your account has been registered successfully')
       return redirect('registerUser')
     else:
@@ -146,6 +155,11 @@ def registerTechnician(request):
             if profile_picture:
                 user.profile_picture.save(profile_picture.name, profile_picture)
 
+            #Send verification email
+            mail_subject = 'Please activate your account'
+            email_template = 'accounts/emails/account_verification_email.html'
+
+            send_verification_email(request, user, mail_subject, email_template)
             messages.success(request, "Your account has been registered successfully")
             return redirect('registerTechnician')  
         else:
@@ -161,6 +175,22 @@ def registerTechnician(request):
     }
     return render(request, 'accounts/registerTechnician.html', context)
 
+def activate(request, uidb64, token):
+  # Activate user by setting the is_active status to True
+  try:
+      uid = urlsafe_base64_decode(uidb64).decode()
+      user = User._default_manager.get(pk=uid)
+  except(TypeError, ValueError, OverflowError, User.DoesNotExist):
+     user = None
+
+  if user is not None and default_token_generator.check_token(user, token):
+     user.is_active = True
+     user.save()
+     messages.success(request, 'Congratulations Your account is activated.')
+     return redirect('myAccount')
+  else:
+     messages.error(request, 'The link was invalid or has expired.')
+     return redirect('myAccount')
 
 
 def login(request):
@@ -176,7 +206,7 @@ def login(request):
     if user is not None:
       auth.login(request, user)
       messages.success(request, 'You are now logged in.')
-      return redirect('myAccount')
+      return redirect('home')
     else:
       messages.error(request, 'Invalid Login Credentials')
       return redirect('login')
@@ -196,9 +226,167 @@ def myAccount(request):
 @login_required(login_url='login')
 @user_passes_test(check_role_customer)
 def custDashboard(request):
-    return render(request, 'accounts/custDashboard.html')
+    # Fetching all technician data here to display it in services
+    all_technicians = Technician.objects.all()[:2]
+    
+    context = {
+        'all_technicians': all_technicians,
+    }
+    
+    return render(request, 'accounts/custDashboard.html', context)
 
 @login_required(login_url='login')
 @user_passes_test(check_role_technician)
 def technicianDashboard(request):
+    # Fetching all technician data here to display it in services
+    technician = Technician.objects.get(user=request.user)
+    
+    context = {
+        'technician': technician,
+    } 
+
+    return render(request, 'accounts/technicianDashboard.html', context)
+
+@login_required(login_url='login')
+def updateTechnicianInfo(request):
+  if request.method == 'POST':
+      request.user.first_name = request.POST.get('first_name')
+      request.user.last_name = request.POST.get('last_name')
+      request.user.phone_number = request.POST.get('phone_number')
+      request.user.save()
+
+      technician = Technician.objects.get(user=request.user)
+      technician.service_charge = request.POST.get('service_charge')
+      technician.save()
+
+      messages.success(request, 'Your profile has bees updated successfully')
+      return redirect('technicianDashboard')
+    
   return render(request, 'accounts/technicianDashboard.html')
+
+@login_required(login_url='login')
+def updateCustomerInfo(request):
+  if request.method == 'POST':
+      request.user.first_name = request.POST.get('first_name')
+      request.user.last_name = request.POST.get('last_name')
+      request.user.phone_number = request.POST.get('phone_number')
+      request.user.save()
+
+      messages.success(request, 'Your profile has bees updated successfully')
+      return redirect('custDashboard')
+    
+  return render(request, 'accounts/custDashboard.html')
+
+@login_required(login_url='login')
+def changePassTech(request):
+    if request.method == 'POST':
+        current_password = request.POST.get('current_password')
+        new_password = request.POST.get('new_password')
+        confirm_password = request.POST.get('confirm_password')
+
+        # Check if the current password matches the user's password
+        if not request.user.check_password(current_password):
+            messages.error(request, 'Current password is incorrect.')
+            return redirect('technicianDashboard')
+
+        # Check if the new password matches the confirm password
+        if new_password != confirm_password:
+            messages.error(request, 'New password and confirm password do not match.')
+            return redirect('technicianDashboard')
+
+        # Update the user's password
+        request.user.set_password(new_password)
+        request.user.save()
+
+        # Update session authentication hash to prevent logout
+        update_session_auth_hash(request, request.user)
+
+        messages.success(request, 'Your password has been successfully updated.')
+        return redirect('technicianDashboard')
+
+    return render(request, 'accounts/technicianDashboard.html')
+
+
+@login_required(login_url='login')
+def changePassCust(request):
+    if request.method == 'POST':
+        current_password = request.POST.get('current_password')
+        new_password = request.POST.get('new_password')
+        confirm_password = request.POST.get('confirm_password')
+
+        # Check if the current password matches the user's password
+        if not request.user.check_password(current_password):
+            messages.error(request, 'Current password is incorrect.')
+            return redirect('custDashboard')
+
+        # Check if the new password matches the confirm password
+        if new_password != confirm_password:
+            messages.error(request, 'New password and confirm password do not match.')
+            return redirect('custDashboard')
+
+        # Update the user's password
+        request.user.set_password(new_password)
+        request.user.save()
+
+        # Update session authentication hash to prevent logout
+        update_session_auth_hash(request, request.user)
+
+        messages.success(request, 'Your password has been successfully updated.')
+        return redirect('custDashboard')
+
+    return render(request, 'accounts/custDashboard.html')
+
+def forgot_password(request):
+   if request.method == 'POST':
+      email = request.POST['email']
+
+      if User.objects.filter(email=email).exists():
+         user = User.objects.get(email__exact=email)
+
+         # send reset password email
+         mail_subject = 'Reset your password.'
+         email_template = 'accounts/emails/reset_password_email.html'
+         send_verification_email(request, user, mail_subject, email_template)
+
+         messages.success(request, 'Password reset link has been sent to your email address')
+         return redirect('login')
+      else:
+         messages.error(request, 'Account doesnot exist')
+         return redirect('forgot_password')
+
+   return render(request, 'accounts/forgot_password.html')
+
+def reset_password_validate(request, uidb64, token):
+  # validate user by decoding the token ad user pk
+  try:
+      uid = urlsafe_base64_decode(uidb64).decode()
+      user = User._default_manager.get(pk=uid)
+  except(TypeError, ValueError, OverflowError, User.DoesNotExist):
+     user = None
+
+  if user is not None and default_token_generator.check_token(user, token):
+     request.session['uid']=uid
+     messages.info(request, 'Please reset your password')
+     return redirect('reset_password')
+  else:
+     messages.error(request, 'This link has been expired')
+     return redirect('myAccount')
+
+
+def reset_password(request):
+   if request.method == 'POST':
+      password = request.POST['password']
+      confirm_password = request.POST['confirm_password']
+
+      if password == confirm_password:
+         pk = request.session.get('uid')
+         user = User.objects.get(pk=pk)
+         user.set_password(password)
+         user.is_active = True
+         user.save()
+         messages.success(request, 'Password reset successfull')
+         return redirect('login')
+      else:
+         messages.error(request,'Passwords do not match')
+         return redirect('reset_password')
+   return render(request, 'accounts/reset_password.html')

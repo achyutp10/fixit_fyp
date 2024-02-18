@@ -73,7 +73,7 @@
               <h4 class="text-center mb-0">WELCOME TO FIXIT</h4>
               <p class="text-center">Please fill this form to get yourself onboarded.</p>
               <hr>
-              <div id="restaurant-sets-holder">
+              <div id="">
                 <form action="{% url "registerUser" %}" class="form-fields-set" method="post" enctype="multipart/form-data">
                   {% csrf_token %}
                   <ul class="">
@@ -163,7 +163,7 @@
                         <div class="col-lg-12">
                           <div class="field-holder">
                             <div>
-                              <input type="submit" value="Register" class="btn btn-danger">
+                              <input type="submit" value="Register" class="btn" style="background-color: #070441; color: white;">
                             </div>
                           </div>
                         </div>
