@@ -1,16 +1,20 @@
 from django.shortcuts import render
 from django.http import HttpResponse
+from rating.models import Rating
 
-from technician.models import Technician
 
 def home(request):
-  return render(request, 'home.html')
-def services(request):
-  return render(request, 'services.html')
-def bookTechnician(request):
-  # technicians = Technician.objects.filter(is_approved=True)
-  technicians = Technician.objects.filter()
+  all_ratings = Rating.objects.all()[:2]
+    
   context = {
-      'technicians': technicians
+        'all_ratings': all_ratings,
     }
-  return render(request, 'bookTechnician.html', context)
+  return render(request, 'home.html', context)
+
+def services(request):
+  all_ratings = Rating.objects.all()[:2]
+    
+  context = {
+        'all_ratings': all_ratings,
+    }
+  return render(request, 'services.html', context)

@@ -114,24 +114,20 @@
 <div class='mt-4 mx-5'><h2 class='mx-3'>Customer Satisfaction</h2></div>
 	<div class="container mb-5 mt-4">
 		<div class="row">
+			
+			{% for rating in all_ratings  %}
+			
 			<div class="col-sm-6">
-				<div class="card border border-dark">
+				<div class="card border border-dark h-100">
 					<div class="card-body p-0">
-						<img src="{% static 'images/profileImage.jpg' %}" alt="" class="card-title rounded-circle mx-auto d-block" style="width: 100px; height: 100px;">
-						<p class="fw-bold card-text text-center">With supporting text below as a natural lead-in to additional content.</p>
-						<p class='fw-bold text-center'>-Achyut</p>
+						<img src="{{rating.user.profile_picture.url}}" alt="" class="card-title rounded-circle mx-auto d-block" style="width: 100px; height: 100px;">
+						<p class="fw-bold card-text text-center">{{rating.feedbacks}}</p>
+						<p class='fw-bold text-center'>-{{rating.user.first_name}} {{rating.user.last_name}}</p>
 					</div>
 				</div>
 			</div>
-			<div class="col-sm-6">
-				<div class="card border border-dark">
-					<div class="card-body p-0">
-						<img src="{% static 'images/profileImage.jpg' %}" alt="" class="card-title rounded-circle mx-auto d-block" style="width: 100px; height: 100px;">
-						<p class="fw-bold card-text text-center">With supporting text below as a natural lead-in to additional content.</p>
-						<p class='fw-bold text-center'>-Achyut</p>
-					</div>
-				</div>
-			</div>
+			{% endfor %}
+			
 			<!--  -->
 		</div>
 	</div>

@@ -1,5 +1,5 @@
 from django import forms
-from .models import User
+from .models import User, UserProfile
 
 class UserForm(forms.ModelForm):
   password = forms.CharField(widget=forms.PasswordInput())
@@ -17,3 +17,22 @@ class UserForm(forms.ModelForm):
       raise forms.ValidationError(
         "Password does not match"
       )
+
+class UserProfileForm(forms.ModelForm):
+    address = forms.CharField(widget=forms.TextInput(attrs={
+        'placeholder': 'Start typing...',
+        'required': 'required',
+        'class': 'form-control', 
+    }))
+    latitude = forms.CharField(widget=forms.TextInput(attrs={'readonly': 'readonly', 'class': 'form-control'}))
+    longitude = forms.CharField(widget=forms.TextInput(attrs={'readonly': 'readonly', 'class': 'form-control'}))
+
+    class Meta:
+        model = UserProfile
+        fields = ['address', 'country', 'state', 'city', 'pin_code', 'latitude', 'longitude',]
+        widgets = {
+            'country': forms.TextInput(attrs={'class': 'form-control'}),
+            'state': forms.TextInput(attrs={'class': 'form-control'}),
+            'city': forms.TextInput(attrs={'class': 'form-control'}),
+            'pin_code': forms.TextInput(attrs={'class': 'form-control'}),
+        }

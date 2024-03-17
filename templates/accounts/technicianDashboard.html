@@ -4,31 +4,46 @@
 
 <div class="container-fluid">
     <div class="row">
-      <div class="col-md-5 px-5" style="background-color: #e5f1ff; height: 730px; max-width: 50%;">
+      <div class="col-md-5 px-5 mb-2" style="background-color: #eef5fe; height: 330px; max-width: 50%;">
         {% if user.profile_picture %}
         <img src="{{user.profile_picture.url}}" alt="Profile Photo" class="img-fluid rounded-circle m-3" style="width: 150px; height: 150px;"> 
         {% else %}
         <p>No profile picture available</p>
         {% endif %}
 
-        <div style='margin-left: 30px; margin-top: 10px;'>
-          <h2 class='fw-bold'>Welcome back,</h2>
-          <h2 class='fw-bold'>{{user.username}}</h2>
+        <div class='d-flex gap-2' style='margin-left: 30px; margin-top: 10px;'>
+          
+          <h4 class='fw-bold'>{{user.username}},</h4>
+          <h5 class='fw-bold mt-1' style='margin-top: 1px;'>{{technician.service_type}}</h5>
         </div>
 
-        <div style='margin-left: 30px; margin-top: 80px;'>
-          <div class='d-flex gap-2'>
-            <h5 class='fw-bold'>Phone Number:</h5><h5 class='text-secondary' style='margin-top: 1px;'>{{user.phone_number}}</h5>
-          </div>
+        <div style='margin-left: 30px; margin-top: 30px;'>
+          <div class='d-flex gap-5'>
 
-          <div class='d-flex gap-2 mt-2'>
-            <h5 class='fw-bold'>Service Type:</h5><h5 class='text-secondary' style='margin-top: 1px;'>{{technician.service_type}}</h5>
+            <a class="btn p-2 rounded" style="background-color: #070441; color: white;" href="{% url "tprofile" %}"><i class="fs-5 fw-bold fa-solid fa-location-dot"> Set Location</i></a>
           </div>
-          <div class='mt-2'>
-            <h5 class='fw-bold'>Technician Description:</h5><h5 class='text-secondary'>{{technician.technician_description}}</h5>
-          </div>
-
         </div>
+
+
+        <div class="border border-dark rounded" style='margin-left: 30px; margin-top: 50px;'>
+
+          <div class="container mt-2">
+            <h4 class="text-center fw-bold">Availability Status</h4>
+            <hr />
+            <form action="{% url "update_status" %}" method="POST">
+              {% csrf_token %}
+                       
+              <label for="status">Status</label>
+              <select name="status" id="status" class="form-control">
+                <option value="Available">Available</option>
+                <option value="Unavailable">Unavailable</option>
+              </select>
+              <br />
+              <button type="submit" class="btn p-2 rounded mb-2 d-flex justify-content-center" style="background-color: #070441; color: white;">Update Status</button>
+            </form>
+          </div>
+        </div>
+
       </div>
 
       <div class="col-md-6 mt-2 mx-5">

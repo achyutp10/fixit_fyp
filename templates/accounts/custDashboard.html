@@ -13,7 +13,10 @@
  
         <div class="ml-5">
           <h3>Welcome back,</h3>
-          <span>{{user.username}}</span>
+          <div class="d-flex" style="gap: 370px;">
+            <span class="">{{user.username}}</span>
+            <a class="btn p-2 rounded" style="background-color: #070441; color: white;" href="{% url "cprofile" %}"><i class="fs-6 fa-solid fa-location-dot">  Set Location</i></a>
+          </div>
         </div>
         <div class="col-md-10" style="margin: 40px 0 0 0;">
           <form class="d-flex border border-dark rounded">
@@ -58,7 +61,7 @@
 <!-- Next content -->
 
 <div class="container mt-3">
-  <h3>Services</h3><br>
+  <h3 class="mt-4">Services</h3><br>
   <div class="row">
     <div class="col-md-4">
 
@@ -81,7 +84,7 @@
 
     </div>
 
-    <div class="col-md-6 mt-0 mb-2" style='margin-left: 190px;'>
+    <div class="col-md-6 mt-0 mb-2" style='margin-left: 220px;'>
       <form class="d-flex flex-column border border-dark rounded-3 p-3" method="post" action="{% url "changePassCust" %}"> 
         {% csrf_token %} 
         <div class="row mb-3">

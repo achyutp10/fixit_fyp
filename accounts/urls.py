@@ -1,9 +1,10 @@
-from django.urls import path
+from django.urls import path, include
 from .import views
 from django.conf import settings
 from django.conf.urls.static import static
 
 urlpatterns = [
+    path('',views.myAccount),
     path('registerUser/', views.registerUser, name='registerUser'),
     path('registerTechnician/', views.registerTechnician, name='registerTechnician'),
     path('login/', views.login, name='login'),
@@ -21,4 +22,11 @@ urlpatterns = [
     path('updateCustomerInfo/', views.updateCustomerInfo, name="updateCustomerInfo"),
     path('changePassTech/', views.changePassTech, name="changePassTech"),
     path('changePassCust/', views.changePassCust, name="changePassCust"),
+    path('updateStatus/', views.update_status, name='update_status'),
+    path('cprofile/',views.cprofile, name='cprofile'),
+
+    path('technician/', include('technician.urls')),
+    path('booking/', include('booking.urls')),
+    path('rating/', include('rating.urls')),
+
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

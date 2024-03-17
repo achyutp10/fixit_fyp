@@ -39,6 +39,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'accounts',
     'technician',
+    'booking',
+    'rating',
 ]
 
 MIDDLEWARE = [
@@ -64,6 +66,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'accounts.context_processors.get_google_api',
             ],
         },
     },
@@ -152,3 +155,8 @@ EMAIL_HOST_USER = 'django.fixit@gmail.com'
 EMAIL_HOST_PASSWORD = 'nickqhibfrupgyuq'
 EMAIL_USE_TLS = True
 DEFAULT_FROM_EMAIL = 'FixIt <django.fixit@gmail.com>'
+
+GOOGLE_API_KEY = 'AIzaSyDPDHbczUyBWAExFSbcVtdBo-x3lJybGsU'
+
+STRIPE_PUBLISHABLE_KEY = 'pk_test_51OreDELk2otvq30SjsMUHGDDIGfcCpNLnb4s2ffkh6PEaqQjJY9GBBcbF4deh67wVbtt6FS6IiDFAcP7RZ8fwmZU00dtwvu5U7'
+STRIPE_SECRET_KEY = 'sk_test_51OreDELk2otvq30SsaC1piGsCXL3ylWNEK3F1BwfGQ89yA7e4nf2XEC4wWclOf6uu1S1ttPnglzObVp4mpqYr42100wmeu1fHx'

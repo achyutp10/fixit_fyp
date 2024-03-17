@@ -1,0 +1,76 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="container-fluid">
+    <div class="row">
+      <div class="col-md-5 px-5 mb-2" style="background-color: #eef5fe; height: 412px; max-width: 50%;">
+        {% if user.profile_picture %}
+        <img src="{{user.profile_picture.url}}" alt="Profile Photo" class="img-fluid rounded-circle m-3" style="width: 150px; height: 150px;"> 
+        {% else %}
+        <p>No profile picture available</p>
+        {% endif %}
+
+        <div class='d-flex gap-2' style='margin-left: 30px; margin-top: 10px;'>
+          <h2 class='fw-bold'>Welcome back,</h2>
+          <h2 class='fw-bold'>{{user.username}}</h2>
+        </div>
+
+      </div>
+
+      <div class="col-md-6 mt-2 mx-5">
+        <h5>Hi, <span class='text-danger'>{{user.email}}</span></h5>
+
+        <form class="border border-dark rounded-3 p-3" method="post" action="{% url "cprofile" %}">
+          {% csrf_token %}  
+          <h3 class="mb-3 text-center">Set Your Location</h3>
+          <div class="mb-3">
+              <label for="address" class="form-label">Address:</label>
+              {{profile_form.address}}
+          </div>
+          <div class="row mb-3">
+              <div class="col-md-6">
+                  <label for="country" class="form-label">Country:</label>
+                  {{profile_form.country}}
+              </div>
+              <div class="col-md-6">
+                  <label for="state" class="form-label">State:</label>
+                  {{profile_form.state}}
+              </div>
+          </div>
+          <div class="row mb-3">
+              <div class="col-md-6">
+                  <label for="city" class="form-label">City:</label>
+                  {{profile_form.city}}
+              </div>
+              <div class="col-md-6">
+                  <label for="pin_code" class="form-label">Pin code:</label>
+                  {{profile_form.pin_code}}
+              </div>
+          </div>
+          <div class="row mb-3">
+              <div class="col-md-6">
+                  <label for="latitude" class="form-label">Latitude:</label>
+                  {{profile_form.latitude}}
+              </div>
+              <div class="col-md-6">
+                  <label for="longitude" class="form-label">Longitude:</label>
+                  {{profile_form.longitude}}
+              </div>
+          </div>
+          <div class="text-end">
+              <button type="submit" class="btn px-5 fw-bold" style="background-color: #070441; color: white;">Save</button>
+          </div>
+      </form>
+      
+      
+      </div>
+      
+    </div>
+  </div>
+  </div>
+</div>
+
+{% include "includes/alerts.html" %}
+
+{% endblock  %}

@@ -1,8 +1,8 @@
 from django.http import HttpResponse
-from django.shortcuts import redirect, render
+from django.shortcuts import get_object_or_404, redirect, render
 from accounts.models import User, UserProfile
 from technician.forms import TechnicianForm
-from .forms import UserForm
+from .forms import UserForm, UserProfileForm
 from django.contrib import messages, auth
 from .utils import detectUser, send_verification_email
 from django.contrib.auth.decorators import login_required, user_passes_test
@@ -238,11 +238,27 @@ def custDashboard(request):
 @login_required(login_url='login')
 @user_passes_test(check_role_technician)
 def technicianDashboard(request):
+    
+    profile = get_object_or_404(UserProfile, user=request.user)
+    technician = get_object_or_404(Technician, user=request.user)
+
+    if request.method == "POST":
+       profile_form = UserProfileForm(request.POST, instance=profile)
+       if profile_form.is_valid():
+          profile_form.save()
+          messages.success(request, 'Location Settings updated!')
+          return redirect('technicianDashboard')
+       else:
+          print(profile_form.errors)
+
+    else:
+      profile_form = UserProfileForm(instance=profile)
     # Fetching all technician data here to display it in services
-    technician = Technician.objects.get(user=request.user)
+      technician = Technician.objects.get(user=request.user)
     
     context = {
         'technician': technician,
+        'profile_form': profile_form,
     } 
 
     return render(request, 'accounts/technicianDashboard.html', context)
@@ -372,7 +388,6 @@ def reset_password_validate(request, uidb64, token):
      messages.error(request, 'This link has been expired')
      return redirect('myAccount')
 
-
 def reset_password(request):
    if request.method == 'POST':
       password = request.POST['password']
@@ -390,3 +405,50 @@ def reset_password(request):
          messages.error(request,'Passwords do not match')
          return redirect('reset_password')
    return render(request, 'accounts/reset_password.html')
+
+from django.shortcuts import get_object_or_404
+
+def update_status(request):
+    if request.method == 'POST':
+        status = request.POST.get('status')
+        user_profile = request.user.userprofile  # Access UserProfile associated with current user
+        technician = get_object_or_404(Technician, user_profile=user_profile)
+        if status == 'Available':
+            technician.is_available_status = True
+            technician.save()
+            messages.info(request, 'Availability status updated to Available.')
+        elif status == 'Unavailable':
+            technician.is_available_status = False
+            technician.save()
+            messages.info(request, 'Availability status updated to Unavailable.')
+        return redirect('technicianDashboard')
+    else:
+        return render(request, 'accounts/technicianDashboard.html')
+
+
+@login_required(login_url='login')
+@user_passes_test(check_role_customer)
+def cprofile(request):
+    profile = get_object_or_404(UserProfile, user=request.user)
+    user = request.user
+
+    if request.method == "POST":
+       profile_form = UserProfileForm(request.POST, instance=profile)
+       if profile_form.is_valid():
+          profile_form.save()
+          messages.success(request, 'Location Settings updated!')
+          return redirect('cprofile')
+       else:
+          print(profile_form.errors)
+
+    else:
+      profile_form = UserProfileForm(instance=profile)
+    # Fetching all technician data here to display it in services
+      user = request.user
+    
+    context = {
+        'user': user,
+        'profile_form': profile_form,
+    } 
+
+    return render(request, 'customer/cprofile.html', context)

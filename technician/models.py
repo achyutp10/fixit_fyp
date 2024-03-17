@@ -30,6 +30,7 @@ class Technician(models.Model):
   service_charge = models.IntegerField()
   service_image = models.ImageField(upload_to=TechnicianImagePath('serviceImages'), blank=True, null=True)
   is_approved = models.BooleanField(default=False)
+  is_available_status = models.BooleanField(default=False)
   created_at = models.DateTimeField(auto_now_add=True)
   modified_at = models.DateTimeField(auto_now=True)
 
