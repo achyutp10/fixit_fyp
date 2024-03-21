@@ -13,5 +13,8 @@ urlpatterns = [
     path('pay_success/',views.pay_success, name='pay_success'),
     path('pay_cancel/',views.pay_cancel, name='pay_cancel'),
 
+    # SEARCH
+    path('search/', views.search, name='search'),
+
 
 ]

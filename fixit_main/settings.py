@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 """
 
 from pathlib import Path
+import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -41,6 +42,7 @@ INSTALLED_APPS = [
     'technician',
     'booking',
     'rating',
+    'django.contrib.gis',
 ]
 
 MIDDLEWARE = [
@@ -80,7 +82,8 @@ WSGI_APPLICATION = 'fixit_main.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql',
+        # 'ENGINE': 'django.db.backends.postgresql',
+        'ENGINE': 'django.contrib.gis.db.backends.postgis',
         'NAME': 'fixit_db',
         'USER': 'postgres',
         'PASSWORD': 'achyutp10',
@@ -160,3 +163,9 @@ GOOGLE_API_KEY = 'AIzaSyDPDHbczUyBWAExFSbcVtdBo-x3lJybGsU'
 
 STRIPE_PUBLISHABLE_KEY = 'pk_test_51OreDELk2otvq30SjsMUHGDDIGfcCpNLnb4s2ffkh6PEaqQjJY9GBBcbF4deh67wVbtt6FS6IiDFAcP7RZ8fwmZU00dtwvu5U7'
 STRIPE_SECRET_KEY = 'sk_test_51OreDELk2otvq30SsaC1piGsCXL3ylWNEK3F1BwfGQ89yA7e4nf2XEC4wWclOf6uu1S1ttPnglzObVp4mpqYr42100wmeu1fHx'
+
+
+os.environ['PATH'] += ';D:\\Important\\ACollege\\IICBIT\\3rdyear\\FYP\\FYP_ALL\\Development\\env\\Lib\\site-packages\\osgeo'
+os.environ['PROJ_LIB'] = 'D:\\Important\\ACollege\\IICBIT\\3rdyear\\FYP\\FYP_ALL\\Development\\env\\Lib\\site-packages\\osgeo\\data\\proj'
+
+GDAL_LIBRARY_PATH = 'D:\\Important\\ACollege\\IICBIT\\3rdyear\\FYP\\FYP_ALL\\Development\\env\\Lib\\site-packages\\osgeo\\gdal304.dll'

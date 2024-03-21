@@ -19,6 +19,9 @@ from .utils import send_notification_to_technician, send_notification_to_user
 from django.contrib.auth import login
 from django.shortcuts import get_object_or_404
 from django.core.paginator import Paginator
+from django.contrib.gis.geos import GEOSGeometry
+from django.contrib.gis.measure import D
+from django.contrib.gis.db.models.functions import Distance
 # Create your views here.
 def bookTechnician(request):
     technicians = Technician.objects.all()  # Queryset for all technicians
@@ -251,3 +254,30 @@ def pay_success(request):
 
 def pay_cancel(request):
 	return render(request, 'booking/cancel.html')
+
+
+def search(request):
+    if not 'address' in request.GET:
+        return redirect('bookTechnician')
+    else:
+
+        address = request.GET['address']
+        latitude = request.GET['lat']
+        longitude = request.GET['lng']
+        radius = request.GET['radius']
+        s_type = request.GET['s_type']
+
+        page_obj = Technician.objects.filter(service_type__icontains=s_type, is_approved=True, user__is_active=True)
+        if latitude and longitude and radius:
+            pnt = GEOSGeometry('POINT(%s %s)' %  (longitude, latitude), 4326)
+            
+            page_obj = Technician.objects.filter(service_type__icontains=s_type, is_approved=True, user__is_active=True, user_profile__location__distance_lte=(pnt, D(km=radius))).annotate(distance=Distance("user_profile__location",pnt)).order_by("distance")
+
+            for dist in page_obj:
+                dist.kms = round(dist.distance.km)
+        context = {
+            'page_obj': page_obj,
+            'address': address,
+        }
+
+        return render(request, 'booking/bookTechnician.html',context)
