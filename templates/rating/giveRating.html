@@ -44,7 +44,7 @@ color: #ff942d; /* Color of the selected stars */
 <div class="row text-center" style="background-color: #f3e7e7; height: 450px; padding: 50px;">
   <div class="col rounded" style="background-color: #ffffff; margin-top: 10px; margin-bottom: 10px; margin-left: 200px; margin-right: 200px;">
     <div>
-      <form action="{% url 'giveRating' technician.id %}" method="post">
+      <form action="{% url 'giveRating' technician.id booking.id %}" method="post">
         {% csrf_token %}
         <!-- Star icons for rating input -->
         <div class="rating mt-4 mb-3">

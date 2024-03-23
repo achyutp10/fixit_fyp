@@ -77,7 +77,7 @@
                     {% if ratings.rating %}
                         <h6 class="">Already Rated</h6>
                     {% else %}
-                        <a href="{% url "giveRating" booking.technician.id %}" class="btn btn-success border-0 fw-bold" style='background-color: #070441;'>Rate Now</a>
+                        <a href="{% url "giveRating" booking.technician.id booking.id %}" class="btn btn-success border-0 fw-bold" style='background-color: #070441;'>Rate Now</a>
                     {% endif %}
                 </td>
                   <td><a href="" style='color: #070441;'><i class="fa-regular fa-comment fa-2x mb-2"></i></a></td>
